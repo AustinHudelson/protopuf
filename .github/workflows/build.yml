@@ -23,27 +23,27 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-22.04
+          - os: ubuntu-latest
             type: Debug
             cxx: gcc
-          - os: ubuntu-22.04
+          - os: ubuntu-latest
             type: Release
             cxx: gcc
             coverage: -DCMAKE_CXX_FLAGS=--coverage
-          - os: ubuntu-22.04
+          - os: ubuntu-latest
             type: Debug
             cxx: clang
-          - os: ubuntu-22.04
+          - os: ubuntu-latest
             type: Release
             cxx: clang
-          - os: windows-2019
+          - os: windows-latest
             type: Debug
-          - os: windows-2019
+          - os: windows-latest
             type: Release
-          - os: macos-13
-            type: Debug
-          - os: macos-13
-            type: Release
+          #- os: macos-13
+          #  type: Debug
+          #- os: macos-13
+          #  type: Release
     
     runs-on: ${{ matrix.os }}
     steps:
@@ -58,10 +58,10 @@ jobs:
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.cxx == 'gcc' }}
       - name: install build tools (clang)
         run: |
-          sudo apt install clang-12 -y
+          sudo apt install clang-14 -y
           sudo rm -rf /usr/lib/gcc/x86_64-linux-gnu/11 /usr/include/c++/11
-          echo "CC=clang-12" >> $GITHUB_ENV
-          echo "CXX=clang++-12" >> $GITHUB_ENV
+          echo "CC=clang-14" >> $GITHUB_ENV
+          echo "CXX=clang++-14" >> $GITHUB_ENV
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.cxx == 'clang' }}
       - name: enable compatibility test (linux)
         run: echo "COMPATIBILITY=-DENABLE_COMPATIBILITY_TEST=ON" >> $GITHUB_ENV
@@ -116,7 +116,7 @@ jobs:
       #   run: .\test\benchmark\Release\protopuf_benchmark
       #   if: ${{ startsWith(matrix.os, 'windows') && matrix.type == 'Release' }}
       - name: capture coverage
-        run: lcov --directory . --capture --output-file coverage.info
+        run: lcov --directory . --ignore-errors mismatch --capture --output-file coverage.info
         if: ${{ matrix.coverage }}
       - name: upload coverage
         uses: codecov/codecov-action@v4

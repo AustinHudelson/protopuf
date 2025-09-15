@@ -189,10 +189,17 @@ namespace pp {
         }
 
         constexpr bool operator==(const message & other) const {
-            return ((
-                    static_cast<const typename T::base_type&>(static_cast<const T&>(*this)) ==
-                    static_cast<const typename T::base_type&>(static_cast<const T&>(other))
-                    ) && ...);
+            // Handle case of empty parameter pack
+            if constexpr (sizeof...(T) == 0) {
+                return true;
+            }
+
+            bool isEqual = true;
+            (..., (isEqual = isEqual && (
+                static_cast<const typename T::base_type&>(static_cast<const T&>(*this)) ==
+                static_cast<const typename T::base_type&>(static_cast<const T&>(other))
+            ))); // Perform the comparison; stop further checks if one fails
+            return isEqual;
         }
 
         constexpr bool operator!=(const message & other) const {
