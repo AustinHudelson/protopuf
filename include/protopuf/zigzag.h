@@ -30,7 +30,7 @@ namespace pp {
     /// Reference:
     /// - https://en.wikipedia.org/wiki/Variable-length_quantity#Zigzag_encoding
     /// - https://developers.google.com/protocol-buffers/docs/encoding#signed_integers
-    template <size_t N>
+    template <std::size_t N>
     class sint_zigzag {
     public:
 
@@ -58,7 +58,7 @@ namespace pp {
         constexpr explicit sint_zigzag(std::span<std::byte, N> in) : v(bytes_to_int(in)) {}
 
         /// Copy constructor, copy from `sint_zigzag<M>` to this `sint_zigzag<N>`, where `M <= N`
-        template <size_t M> requires (M <= N)
+        template <std::size_t M> requires (M <= N)
         constexpr sint_zigzag(const sint_zigzag<M>& i) : v(i.v) {}
 
         /// Convert the Zigzag encoding integer to a normal signed integer (two's complement encoding)
@@ -94,7 +94,7 @@ namespace pp {
         }
         
         /// Assignment operator, copy from `sint_zigzag<M>` to this `sint_zigzag<N>`, where `M <= N`
-        template <size_t M> requires (M <= N)
+        template <std::size_t M> requires (M <= N)
         constexpr sint_zigzag& operator=(const sint_zigzag<M>& i) {
             v = i.v;
             return *this;
@@ -109,10 +109,10 @@ namespace pp {
         }
     };
 
-    template <size_t N>
+    template <std::size_t N>
     struct is_integral<sint_zigzag<N>> : std::true_type {};
 
-    template <size_t N>
+    template <std::size_t N>
     class integer_coder<sint_zigzag<N>> {
         using T = sint_zigzag<N>;
 
@@ -138,7 +138,7 @@ namespace pp {
     };
 
 
-    template<size_t N>
+    template<std::size_t N>
     class varint_coder<sint_zigzag<N>> {
         using T = sint_zigzag<N>;
 

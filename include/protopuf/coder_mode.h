@@ -60,7 +60,7 @@ namespace pp {
     /// @param offset offset into the span of byte that checks for validity.
     /// @returns true if the offset is valid, otherwise false.
    	template<typename T>
-    concept bytes_span_checker = requires(bytes b, size_t offset) {
+    concept bytes_span_checker = requires(bytes b, std::size_t offset) {
         { T::check_bytes_span(b, offset) } -> std::same_as<bool>;
     };
 
@@ -88,7 +88,7 @@ namespace pp {
             return true;
         }
 
-        static constexpr bool check_bytes_span(bytes, size_t) {
+        static constexpr bool check_bytes_span(bytes, std::size_t) {
            return true;
         }
     };
@@ -117,7 +117,7 @@ namespace pp {
             return iter != end;
         }
 
-        static constexpr bool check_bytes_span(bytes b, size_t offset) {
+        static constexpr bool check_bytes_span(bytes b, std::size_t offset) {
            return b.size() >= offset;
         }
     };

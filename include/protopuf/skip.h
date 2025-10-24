@@ -42,7 +42,7 @@ namespace pp {
     /// and does not really encode it into bytes. 
     template <typename T>
     concept encode_skipper = coder<typename T::coder> && requires(typename T::value_type v) {
-        { T::encode_skip(v) } -> std::same_as<size_t>;
+        { T::encode_skip(v) } -> std::same_as<std::size_t>;
     };
 
     /// @brief A concept statisfied while `T::coder` is a @ref coder and 
@@ -76,7 +76,7 @@ namespace pp {
         using coder = integer_coder<T>;
         using value_type = T;
 
-        static constexpr size_t encode_skip(T) {
+        static constexpr std::size_t encode_skip(T) {
             return sizeof(T);
         }
 
@@ -94,7 +94,7 @@ namespace pp {
         using coder = float_coder<T>;
         using value_type = T;
 
-        static constexpr size_t encode_skip(T) {
+        static constexpr std::size_t encode_skip(T) {
             return sizeof(T);
         }
 
@@ -112,8 +112,8 @@ namespace pp {
         using coder = varint_coder<T>;
         using value_type = T;
 
-        static constexpr size_t encode_skip(T v) {
-            size_t n = 0;
+        static constexpr std::size_t encode_skip(T v) {
+            std::size_t n = 0;
 
             do {
                 v >>= 7, ++n;
@@ -146,7 +146,7 @@ namespace pp {
         using coder = varint_coder<T>;
         using value_type = T;
 
-        static constexpr size_t encode_skip(T v) {
+        static constexpr std::size_t encode_skip(T v) {
             return skipper<varint_coder<std::make_unsigned_t<T>>>::encode_skip(static_cast<std::make_unsigned_t<T>>(v));
         }
 
@@ -156,7 +156,7 @@ namespace pp {
         }
     };
 
-    template <size_t N>
+    template <std::size_t N>
     struct skipper<varint_coder<sint_zigzag<N>>> {
     private:
         using T = sint_zigzag<N>;
@@ -165,7 +165,7 @@ namespace pp {
         using coder = varint_coder<T>;
         using value_type = T;
 
-        static constexpr size_t encode_skip(T v) {
+        static constexpr std::size_t encode_skip(T v) {
             return skipper<varint_coder<uint<N>>>::encode_skip(v.get_underlying());
         }
 
@@ -181,7 +181,7 @@ namespace pp {
         using coder = bool_coder;
         using value_type = bool;
 
-        static constexpr size_t encode_skip(bool v) {
+        static constexpr std::size_t encode_skip(bool v) {
             return skipper<integer_coder<uint<1>>>::encode_skip(v);
         }
 
@@ -197,7 +197,7 @@ namespace pp {
         using coder = enum_coder<T>;
         using value_type = T;
 
-        static constexpr size_t encode_skip(T v) {
+        static constexpr std::size_t encode_skip(T v) {
             return skipper<varint_coder<std::underlying_type_t<T>>>::encode_skip(static_cast<std::underlying_type_t<T>>(v));
         }
 

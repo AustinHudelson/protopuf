@@ -441,8 +441,8 @@ namespace pp {
     struct skipper<message_coder<T>> {
         using value_type = T;
 
-        static constexpr size_t encode_skip(const T& msg) {
-            size_t n = 0;
+        static constexpr std::size_t encode_skip(const T& msg) {
+            std::size_t n = 0;
             msg.for_each([&n]<field_c F> (const F& f) {
                 if(empty_field(f)) {
                     return;
@@ -493,7 +493,7 @@ namespace pp {
                 return {};
             }
 
-            size_t len = 0;
+            std::size_t len = 0;
             std::tie(len, b) = decod_len;
 
             const auto origin_b = b;
@@ -517,7 +517,7 @@ namespace pp {
     struct skipper<embedded_message_coder<T>> {
         using value_type = T;
 
-        static constexpr size_t encode_skip(const T& v) {
+        static constexpr std::size_t encode_skip(const T& v) {
             uint<8> n = skipper<message_coder<T>>::encode_skip(v);
 
             n += skipper<varint_coder<uint<8>>>::encode_skip(n);

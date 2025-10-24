@@ -27,7 +27,7 @@ namespace pp {
     /// 
     /// Reference:
     /// - http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0732r0.pdf
-    template <typename CharT, size_t N>
+    template <typename CharT, std::size_t N>
     struct basic_fixed_string
     {
         /// Construct the string from `const CharT[N]`
@@ -49,13 +49,13 @@ namespace pp {
         CharT data[N];
     };
 
-    template <typename CharT, size_t N, size_t M>
+    template <typename CharT, std::size_t N, std::size_t M>
     constexpr bool operator==(const basic_fixed_string<CharT, N> &l, const basic_fixed_string<CharT, M> &r) {
         if (N != M) {
             return false;
         }
 
-        for (size_t i = 0; i < N; ++i) {
+        for (std::size_t i = 0; i < N; ++i) {
             if(l.data[i] != r.data[i]) {
                 return false;
             }
@@ -64,9 +64,9 @@ namespace pp {
         return true;
     }
 
-    template <typename CharT, size_t N, size_t M>
+    template <typename CharT, std::size_t N, std::size_t M>
     constexpr auto operator<=>(const basic_fixed_string<CharT, N> &l, const basic_fixed_string<CharT, M> &r) {
-        for (size_t i = 0; i < std::min(N, M); ++i) {
+        for (std::size_t i = 0; i < std::min(N, M); ++i) {
             if(l.data[i] != r.data[i]) {
                 return l.data[i] <=> r.data[i];
             }
@@ -76,12 +76,12 @@ namespace pp {
     }
 
     /// Type alias for `basic_fixed_string<char, N>` where `N` is length of the string
-    template <size_t N>
+    template <std::size_t N>
     using fixed_string = basic_fixed_string<char, N>;
 
     /// Expand the elements of @ref basic_fixed_string to NTTPs, i.e. `expand_fixed_string<"hello">` as `constant_array<char, 'h', 'e', 'l', 'l', 'o', 0>`
     template <basic_fixed_string S>
-    constexpr auto expand_fixed_string = []<size_t... I>(std::index_sequence<I...>) {
+    constexpr auto expand_fixed_string = []<std::size_t... I>(std::index_sequence<I...>) {
         return constant_array<typename decltype(S)::value_type, S.data[I]...>{};
     }(std::make_index_sequence<decltype(S)::size>{});
 

@@ -44,32 +44,32 @@ public:
   }
 };
 
-template<pp::coder Coder, size_t size>
+template<pp::coder Coder, std::size_t size>
 inline void run_safe_encode_test_with_insufficient_buffer_size(const auto& container, const source_location& location) {
     std::array<std::byte, size> a{};
     ASSERT_FALSE(Coder::template encode<pp::safe_mode>(container, a)) << "Buffer size " << size << ' ' <<
         '(' << location.file_name() << ':' << location.line() << ')';
 }
 
-template<pp::coder Coder, size_t size>
+template<pp::coder Coder, std::size_t size>
 inline void run_safe_encode_tests_with_insufficient_buffer_size(const auto& container, const source_location location =
                source_location::current()) {
-    [] <size_t... sizes> (const auto& container, std::index_sequence<sizes...>, const source_location& location) {
+    [] <std::size_t... sizes> (const auto& container, std::index_sequence<sizes...>, const source_location& location) {
         (run_safe_encode_test_with_insufficient_buffer_size<Coder, sizes>(container, location), ...);
     } (container, std::make_index_sequence<size>{}, location);
 }
 
-template<pp::coder Coder, size_t size>
+template<pp::coder Coder, std::size_t size>
 inline void run_safe_decode_test_with_insufficient_buffer_size(pp::bytes buffer, const source_location& location =
                 source_location::current()) {
     ASSERT_FALSE(Coder::template decode<pp::safe_mode>(buffer.subspan(0, size))) << "Buffer size " << size << ' ' <<
         '(' << location.file_name() << ':' << location.line() << ')';
 }
 
-template<pp::coder Coder, size_t size>
+template<pp::coder Coder, std::size_t size>
 inline void run_safe_decode_tests_with_insufficient_buffer_size(std::array<std::byte, size>& buffer, const source_location& location =
                source_location::current()) {
-    [] <size_t... sizes> (pp::bytes buffer, std::index_sequence<sizes...>, const source_location& location) {
+    [] <std::size_t... sizes> (pp::bytes buffer, std::index_sequence<sizes...>, const source_location& location) {
         (run_safe_decode_test_with_insufficient_buffer_size<Coder, sizes>(buffer, location), ...);
     } (buffer, std::make_index_sequence<size>{}, location);
 }

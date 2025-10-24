@@ -73,7 +73,7 @@ namespace pp {
                 return {};
             }
 
-            size_t i = 0;
+            std::size_t i = 0;
             while((*iter >> 7) == 1_b) {
                 n |= static_cast<T>(static_cast<T>(*iter & 0b0111'1111_b) << 7*i);
                 ++iter, ++i;
