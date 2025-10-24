@@ -64,9 +64,14 @@ namespace pp {
         return true;
     }
 
+    /// Custom constexpr implementation of std::min
+    constexpr size_t constexpr_min(size_t a, size_t b) {
+        return (a < b) ? a : b;
+    }
+
     template <typename CharT, std::size_t N, std::size_t M>
     constexpr auto operator<=>(const basic_fixed_string<CharT, N> &l, const basic_fixed_string<CharT, M> &r) {
-        for (std::size_t i = 0; i < std::min(N, M); ++i) {
+        for (std::size_t i = 0; i < constexpr_min(N, M); ++i) {
             if(l.data[i] != r.data[i]) {
                 return l.data[i] <=> r.data[i];
             }
