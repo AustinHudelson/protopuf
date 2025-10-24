@@ -27,7 +27,7 @@
 #include "byte.h"
 
 namespace pp {
-    template <std::size_t N>
+    template <size_t N>
     struct sint_impl;
 
     template <>
@@ -52,10 +52,10 @@ namespace pp {
 
     /// @brief Type alias for signed integer.
     /// @param N byte length of the integer, i.e. `2` for `std::int16_t`.
-    template <std::size_t N>
+    template <size_t N>
     using sint = typename sint_impl<N>::type;
 
-    template <std::size_t N>
+    template <size_t N>
     struct uint_impl;
 
     template <>
@@ -80,7 +80,7 @@ namespace pp {
 
     /// @brief Type alias for unsigned integer.
     /// @param N byte length of the integer, i.e. `2` for `std::uint16_t`.
-    template <std::size_t N>
+    template <size_t N>
     using uint = typename uint_impl<N>::type;
 
     /// @brief Checks whether `T` is an integral type.
@@ -100,7 +100,7 @@ namespace pp {
 
     /// @brief A concept satisfied if and only if `T` is an integral type, 
     /// and the size of `T` equals to `N`.
-    template <typename T, std::size_t N>
+    template <typename T, size_t N>
     concept sized_integral = integral<T> && sizeof(T) == N;
 
     /// @brief A concept satisfied if and only if `T` is an integral type, 
@@ -114,17 +114,17 @@ namespace pp {
     concept integral64 = sized_integral<T, 8>;
 
     /// Construct a `std::array<T, N>` from values of a `std::span<T, N>`
-    template <typename T, std::size_t N>
+    template <typename T, size_t N>
     constexpr auto make_array(std::span<T, N> s) {
-        return [&s] <std::size_t ...I> (std::index_sequence<I...>) {
+        return [&s] <size_t ...I> (std::index_sequence<I...>) {
             return std::array<T, N> { s[I]... };
         }(std::make_index_sequence<N>{});
     }
 
     /// Copy values of a `std::array<T, N>` to a `std::span<T, N>`
-    template <typename T, std::size_t N>
+    template <typename T, size_t N>
     constexpr void copy_to_span(const std::array<T, N>& a, std::span<T, N> s) {
-        [&a, &s] <std::size_t ...I> (std::index_sequence<I...>) {
+        [&a, &s] <size_t ...I> (std::index_sequence<I...>) {
             ((s[I] = a[I]), ...);
         }(std::make_index_sequence<N>{});
     }
@@ -133,7 +133,7 @@ namespace pp {
     ///
     /// @param bytes the input bytes (with length `N`) to be coverted
     /// @returns the coverted unsigned integer `uint<N>`
-    template <std::size_t N>
+    template <size_t N>
     constexpr uint<N> bytes_to_int(sized_bytes<N> bytes) {
     #if defined(INT_CONVERSION_RECURSIVE_IMPL) || !(__cpp_lib_bit_cast >= 201806L)
         return bytes_to_int(bytes.template subspan<0, N/2>()) | bytes_to_int(bytes.template subspan<N/2>()) << N*4;
@@ -153,7 +153,7 @@ namespace pp {
     ///
     /// @param i the unsigned integer to be converted
     /// @param bytes the byte sequence which the integer is converted into (with length `N`)
-    template <std::size_t N>
+    template <size_t N>
     constexpr void int_to_bytes(uint<N> i, sized_bytes<N> bytes) {
     #if defined(INT_CONVERSION_RECURSIVE_IMPL) || !(__cpp_lib_bit_cast >= 201806L)
         int_to_bytes<N/2>(i, bytes.template subspan<0, N/2>());
@@ -173,7 +173,7 @@ namespace pp {
     /// @brief Convert an unsigned integer (with byte length `N`) into an byte array with length `N` (with ownership).
     /// @param i the unsigned integer to be converted
     /// @returns a byte array which contains the coverted integer (with length `N` and ownership)
-    template <std::size_t N>
+    template <size_t N>
     constexpr auto int_to_bytes(uint<N> i) {
     #if __cpp_lib_bit_cast >= 201806L && !(defined(INT_CONVERSION_RECURSIVE_IMPL) || defined(INT_CONVERSION_UB_IMPL))
         return std::bit_cast<std::array<std::byte, N>>(i);
@@ -195,7 +195,7 @@ namespace pp {
 
         integer_coder() = delete;
 
-        static constexpr std::size_t N = sizeof(T);
+        static constexpr size_t N = sizeof(T);
 
         template <coder_mode Mode = safe_mode>
         static constexpr encode_result<Mode> encode(T i, bytes b) {

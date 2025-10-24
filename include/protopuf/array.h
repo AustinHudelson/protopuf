@@ -100,7 +100,7 @@ namespace pp {
         using coder = array_coder<C, R>;
         using value_type = R;
 
-        static constexpr std::size_t encode_skip(const R &con) {
+        static constexpr size_t encode_skip(const R &con) {
             uint<8> n = 0;
 
             for(const auto &i : con) {

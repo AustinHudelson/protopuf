@@ -31,10 +31,10 @@ namespace pp {
         constexpr value_type operator()() const noexcept { return value; }
     };
 
-    template <std::size_t, auto...>
+    template <size_t, auto...>
     struct constant_get_impl;
 
-    template <std::size_t N, auto v1, auto... vn>
+    template <size_t N, auto v1, auto... vn>
     struct constant_get_impl<N, v1, vn...> {
         static constexpr auto value = constant_get_impl<N - 1, vn...>::value;
     };
@@ -45,13 +45,13 @@ namespace pp {
     };
 
     /// Get element value by index `N` from a NTTP list `v...` 
-    template <std::size_t N, auto... v>
+    template <size_t N, auto... v>
     constexpr auto constant_get = constant_get_impl<N, v...>::value;
 
-    template <std::size_t, typename...>
+    template <size_t, typename...>
     struct type_get_impl;
 
-    template <std::size_t N, typename T, typename... Ts>
+    template <size_t N, typename T, typename... Ts>
     struct type_get_impl<N, T, Ts...> {
         using type = typename type_get_impl<N - 1, Ts...>::type;
     };
@@ -62,7 +62,7 @@ namespace pp {
     };
 
     /// Get element type by index `N` from a type list `Ts...` 
-    template <std::size_t N, typename... Ts>
+    template <size_t N, typename... Ts>
     using type_get = typename type_get_impl<N, Ts...>::type;
 
     /// A constant tuple with constants as NTTPs.
@@ -72,13 +72,13 @@ namespace pp {
 
         static constexpr auto size = sizeof...(v);
 
-        template <std::size_t N>
+        template <size_t N>
         static constexpr auto value = constant_get<N, v...>;
 
-        template <std::size_t N>
+        template <size_t N>
         using value_type = decltype(value<N>);
 
-        template <std::size_t N>
+        template <size_t N>
         constexpr decltype(auto) get() const {
             return constant<constant_get<N, v...>>{};
         }
@@ -91,12 +91,12 @@ namespace pp {
 
         static constexpr auto size = sizeof...(v);
 
-        template <std::size_t N>
+        template <size_t N>
         static constexpr auto value = constant_get<N, v...>;
 
         using value_type = T;
 
-        template <std::size_t N>
+        template <size_t N>
         constexpr decltype(auto) get() const {
             return constant<constant_get<N, v...>>{};
         }

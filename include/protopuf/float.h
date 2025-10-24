@@ -70,7 +70,7 @@ namespace pp {
         }
     };
 
-    template <std::size_t N>
+    template <size_t N>
     struct floating_impl;
 
     template <>
@@ -84,11 +84,11 @@ namespace pp {
     };
 
     /// Type alias of floating points, i.e. `floating<4>` as `float`, `floating<8>` as `double`
-    template <std::size_t N>
+    template <size_t N>
     using floating = typename floating_impl<N>::type;
 
     /// A `std::floating_point<T>` where byte size of `T` equals to `N` 
-    template <typename T, std::size_t N>
+    template <typename T, size_t N>
     concept sized_floating_point = std::floating_point<T> && sizeof(T) == N;
 
     /// A concept statisfied while `T = float`
